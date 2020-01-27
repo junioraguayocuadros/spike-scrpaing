@@ -24,16 +24,21 @@ def _news_scraper(news_site_uid):
     homepage = news.HomePage(news_site_uid, host)
 
     articles = []
+    indice = 0
     for link in homepage.article_links:
         article = _fetch_article(news_site_uid, host, link)
 
         if article:
             logger.info('Article fetched!!')
+            print(article)
             articles.append(article)
-            print(article.title)
-            break
+            indice+=1
+            if indice == 20:
+                break
+            #print(article.title)
+            #break
 
-    print(len(articles))
+    #print(len(articles))
     _save_articles(news_site_uid, articles)
 
 
@@ -42,6 +47,7 @@ def _save_articles(news_site_uid, articles):
     out_file_name = '{news_site_uid}_{datetime}_articles.csv'.format(news_site_uid=news_site_uid, datetime=now)
 
     csv_headers = list(filter(lambda property: not property.startswith('_'), dir(articles[0])))
+    print(csv_headers)
 
     with open(out_file_name, mode='w+') as f:
         writer = csv.writer(f)
